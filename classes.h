@@ -29,6 +29,8 @@ public:
     void write_into_data_file(ostream& out) const {
         out.write(reinterpret_cast<const char*>(&id), sizeof(id));  // Write the integer ID
         out.write(name, sizeof(name));  // Write the fixed length name
+        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id));  // Write the integer manager_id
+        out.write(bio, sizeof(bio));  // Write the fixed length bio
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
