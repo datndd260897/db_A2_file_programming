@@ -29,6 +29,8 @@ public:
     void write_into_data_file(ostream& out) const {
         out.write(reinterpret_cast<const char*>(&id), sizeof(id));  // Write the integer ID
         out.write(name, sizeof(name));  // Write the fixed length name
+        out.write(bio, sizeof(bio));  // Write the fixed length biography
+        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id));  // Write the integer manager ID
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
@@ -37,6 +39,8 @@ public:
     void read_from_data_file(istream& in) {
         in.read(reinterpret_cast<char*>(&id), sizeof(id));  // Read the integer ID
         in.read(name, sizeof(name));  // Read the fixed length name
+        in.read(bio, sizeof(bio));  // Read the fixed length biography
+        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the integer manager ID
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
@@ -72,13 +76,25 @@ public:
     // Reads data from a CSV file and writes it to a binary data file as Employee objects
     void createFromFile(const string& csvFilename) {
         ifstream csvFile(csvFilename);  // Open the Employee.csv file for reading
+        if (!csvFile.is_open()) {
+            cerr << "Failed to open CSV file: " << csvFilename << endl;
+            return;
+        }
         
         string line, name, bio;
         int id, manager_id;
 
         // Read each line from the CSV file, parse it, and create Employee objects
         while (getline(csvFile, line)) {
-            
+            stringstream ss(line);
+            string id_str, manager_id_str;
+            // Parse id, name, bio, and manager_id from the CSV line
+            getline(ss, id_str, ',');  // Extract ID (as a string)
+            getline(ss, name, ',');   // Extract Name
+            getline(ss, bio, ',');    // Extract Bio
+            getline(ss, manager_id_str, ',');  // Extract Manager ID (as a string)
+            id = stoi(id_str);  // Convert ID to integer
+            manager_id = stoi(manager_id_str);  // Convert Manager ID to integer
             /***TO_DO***/ 
             // Parse id, name, bio and manager-id from line, to create the Employee object below 
 
@@ -91,16 +107,62 @@ public:
 
     // Searches for an Employee by ID in the binary data_file and prints if found
     void findAndPrintEmployee(int searchId) {
-        
+
         data_file.seekg(0, ios::beg);  // Rewind the data_file to the beginning for reading
 
         Employee emp;
 
         /*** TO_DO ***/
-        // Use [emp.read_from_data_file(data_file)] to read lines from the datafile 
-        // until you find the id you are looking for or reach the end-of-file (eof) 
+        // Use [emp.read_from_data_file(data_file)] to read lines from the datafile
+        // until you find the id you are looking for or reach the end-of-file (eof)
+        bool found = false;
 
-       
-        // Print not found message if no match
+        while (data_file) {
+            emp.read_from_data_file(data_file);  // Read an Employee object from the binary file
+
+            if (data_file.eof()) break;  // Break the loop if the end of the file is reached
+
+            if (emp.id == searchId) {
+                // If the ID matches the search ID, print the employee details
+                cout << "Employee Found:" << endl;
+                // Print not found message if no match
+                emp.print();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Employee with ID " << searchId << " not found." << endl;
+        }
     }
+    void searchEmployeeById(const string& filename, int id) {
+        ifstream inFile(filename, ios::binary);
+        if (!inFile) {
+            cerr << "Error: Could not open file for reading." << endl;
+            return;
+        }
+
+        Employee emp;
+        bool found = false;
+
+        while (inFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee))) {
+            if (emp.id == id) {
+                cout << "Employee Found:" << endl;
+                cout << "ID: " << emp.id << endl;
+                cout << "Name: " << emp.name << endl;
+                cout << "Bio: " << emp.bio << endl;
+                cout << "Manager ID: " << emp.manager_id << endl;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "Employee with ID " << id << " not found." << endl;
+        }
+
+        inFile.close();
+    }
+
 };
