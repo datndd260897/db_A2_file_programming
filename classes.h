@@ -29,8 +29,8 @@ public:
     void write_into_data_file(ostream& out) const {
         out.write(reinterpret_cast<const char*>(&id), sizeof(id));  // Write the integer ID
         out.write(name, sizeof(name));  // Write the fixed length name
-        out.write(bio, sizeof(bio));  // Write the fixed length biography
-        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id));  // Write the integer manager ID
+        out.write(reinterpret_cast<const char*>(&manager_id), sizeof(manager_id));  // Write the integer manager_id
+        out.write(bio, sizeof(bio));  // Write the fixed length bio
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
@@ -39,8 +39,8 @@ public:
     void read_from_data_file(istream& in) {
         in.read(reinterpret_cast<char*>(&id), sizeof(id));  // Read the integer ID
         in.read(name, sizeof(name));  // Read the fixed length name
-        in.read(bio, sizeof(bio));  // Read the fixed length biography
-        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the integer manager ID
+        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the integer Manager_id
+        in.read(bio, sizeof(bio));  // Read the fixed length bio
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
@@ -76,28 +76,22 @@ public:
     // Reads data from a CSV file and writes it to a binary data file as Employee objects
     void createFromFile(const string& csvFilename) {
         ifstream csvFile(csvFilename);  // Open the Employee.csv file for reading
+        cout << "called createFromFile with filename " + csvFilename<<endl;
         if (!csvFile.is_open()) {
             cerr << "Failed to open CSV file: " << csvFilename << endl;
             return;
         }
-        
+
         string line, name, bio;
         int id, manager_id;
 
         // Read each line from the CSV file, parse it, and create Employee objects
-        while (getline(csvFile, line)) {
-            stringstream ss(line);
-            string id_str, manager_id_str;
-            // Parse id, name, bio, and manager_id from the CSV line
-            getline(ss, id_str, ',');  // Extract ID (as a string)
-            getline(ss, name, ',');   // Extract Name
-            getline(ss, bio, ',');    // Extract Bio
-            getline(ss, manager_id_str, ',');  // Extract Manager ID (as a string)
-            id = stoi(id_str);  // Convert ID to integer
-            manager_id = stoi(manager_id_str);  // Convert Manager ID to integer
-            /***TO_DO***/ 
-            // Parse id, name, bio and manager-id from line, to create the Employee object below 
-
+        while (getline(csvFile, line, ',')) { // Parse id, name, bio and manager-id, to create the Employee object below
+            id = atoi(line.c_str());                     // Converts the id Value to integer
+            getline(csvFile,name, ',');       // Gets name
+            getline(csvFile,bio, ',');        // Gets the bio
+            getline(csvFile,line);                 //Get the next value save it line
+            manager_id= atoi(line.c_str());             // Converts the manager id to integer
             Employee emp(id, name, bio, manager_id);  //create Employee objects
 
             emp.write_into_data_file(data_file); // Write the Employee object, i.e., the row you read to the .dat data_file
