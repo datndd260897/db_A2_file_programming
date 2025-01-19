@@ -1,4 +1,5 @@
 // Include necessary standard library headers
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -39,6 +40,8 @@ public:
     void read_from_data_file(istream& in) {
         in.read(reinterpret_cast<char*>(&id), sizeof(id));  // Read the integer ID
         in.read(name, sizeof(name));  // Read the fixed length name
+        in.read(reinterpret_cast<char*>(&manager_id), sizeof(manager_id));  // Read the integer Manager_id
+        in.read(bio, sizeof(bio));  // Read the fixed length bio
         /***TO_DO***/ // do the same thing for bio and manager-id
 
     }
@@ -74,18 +77,18 @@ public:
     // Reads data from a CSV file and writes it to a binary data file as Employee objects
     void createFromFile(const string& csvFilename) {
         ifstream csvFile(csvFilename);  // Open the Employee.csv file for reading
-        
+        cout << "called createFromFile with filename " + csvFilename<<endl;
         string line, name, bio;
         int id, manager_id;
-
         // Read each line from the CSV file, parse it, and create Employee objects
-        while (getline(csvFile, line)) {
-            
-            /***TO_DO***/ 
-            // Parse id, name, bio and manager-id from line, to create the Employee object below 
-
+        while (getline(csvFile, line, ',')) { // Parse id, name, bio and manager-id from line, to create the Employee object below
+            id = atoi(line.c_str());
+            getline(csvFile,name, ',');
+            getline(csvFile,bio, ',');
+            getline(csvFile,line);
+            manager_id= atoi(line.c_str());
             Employee emp(id, name, bio, manager_id);  //create Employee objects
-
+            //cout << "id: " << id << ", name: " << name << ", bio: " << bio << ", manager id: " << manager_id << endl;
             emp.write_into_data_file(data_file); // Write the Employee object, i.e., the row you read to the .dat data_file
         }
         csvFile.close();  // Close the CSV file

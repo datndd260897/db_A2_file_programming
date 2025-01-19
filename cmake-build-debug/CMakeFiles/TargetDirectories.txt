@@ -1,0 +1,3 @@
+C:/Users/User/db_A2_file_programming/cmake-build-debug/CMakeFiles/db_A2_file_programming.dir
+C:/Users/User/db_A2_file_programming/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/User/db_A2_file_programming/cmake-build-debug/CMakeFiles/rebuild_cache.dir
