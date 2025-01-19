@@ -8,5 +8,5 @@
 
 
 const std::string DATA_FILE = "EmployeeRelation.dat";
-const std::string CSV_FILE = R"(C:\Users\User\db_A2_file_programming\Employee.csv)";
+const std::string CSV_FILE = "Employee.csv";
 #endif //CONSTANTS_H
