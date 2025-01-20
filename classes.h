@@ -99,21 +99,14 @@ public:
         csvFile.close();  // Close the CSV file
     }
 
-    // Searches for an Employee by ID in the binary data_file and prints if found
+    // Find Employee by ID and print in console. Use emp.read_from_data_file to read the data file
     void findAndPrintEmployee(int searchId) {
-
-        data_file.clear();           // Clear any error flags, including EOF
-        data_file.seekg(0, ios::beg);  // Rewind the data_file to the beginning for reading
-
+        data_file.clear();
+        data_file.seekg(0, ios::beg);
         Employee emp;
-
-        /*** TO_DO ***/
-        // Use [emp.read_from_data_file(data_file)] to read lines from the datafile
-        // until you find the id you are looking for or reach the end-of-file (eof)
         bool found = false;
-
         while (data_file) {
-            emp.read_from_data_file(data_file);  // Read an Employee object from the binary file
+            emp.read_from_data_file(data_file);
 
             if (data_file.eof()) break;  // Break the loop if the end of the file is reached
 
