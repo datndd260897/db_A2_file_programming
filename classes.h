@@ -102,6 +102,7 @@ public:
     // Searches for an Employee by ID in the binary data_file and prints if found
     void findAndPrintEmployee(int searchId) {
 
+        data_file.clear();           // Clear any error flags, including EOF
         data_file.seekg(0, ios::beg);  // Rewind the data_file to the beginning for reading
 
         Employee emp;
@@ -118,7 +119,6 @@ public:
 
             if (emp.id == searchId) {
                 // If the ID matches the search ID, print the employee details
-                cout << "Employee Found:" << endl;
                 // Print not found message if no match
                 emp.print();
                 found = true;
@@ -129,34 +129,6 @@ public:
         if (!found) {
             cout << "Employee with ID " << searchId << " not found." << endl;
         }
-    }
-    void searchEmployeeById(const string& filename, int id) {
-        ifstream inFile(filename, ios::binary);
-        if (!inFile) {
-            cerr << "Error: Could not open file for reading." << endl;
-            return;
-        }
-
-        Employee emp;
-        bool found = false;
-
-        while (inFile.read(reinterpret_cast<char*>(&emp), sizeof(Employee))) {
-            if (emp.id == id) {
-                cout << "Employee Found:" << endl;
-                cout << "ID: " << emp.id << endl;
-                cout << "Name: " << emp.name << endl;
-                cout << "Bio: " << emp.bio << endl;
-                cout << "Manager ID: " << emp.manager_id << endl;
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            cout << "Employee with ID " << id << " not found." << endl;
-        }
-
-        inFile.close();
     }
 
 };
